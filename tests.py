@@ -39,12 +39,13 @@ class TestBooksCollector:
         collector.set_book_genre('Рон Уизли и пауки заставляют танцевать', 'Ужасы')
         assert collector.get_books_with_specific_genre('Ужасы') == ['Рон Уизли и пауки заставляют танцевать']
 
-    def test_get_books_for_children_not_show_horror_books(self):
+    @pytest.mark.parametrize('name, genre', [['Рон Уизли и пауки заставляют танцевать', 'Ужасы'], ['Северус Снейп и тайна шкуры бумсланга', 'Детективы']])
+    def test_get_books_for_children_not_show_horror_and_detective_books(self, name, genre):
         collector = BooksCollector()
         collector.add_new_book('Рубеус Хагрид и зря я это сказал')
-        collector.add_new_book('Рон Уизли и пауки заставляют танцевать')
+        collector.add_new_book(name)
         collector.set_book_genre('Рубеус Хагрид и зря я это сказал', 'Комедии')
-        collector.set_book_genre('Рон Уизли и пауки заставляют танцевать', 'Ужасы')
+        collector.set_book_genre(name, genre)
         assert collector.get_books_for_children() == ['Рубеус Хагрид и зря я это сказал']
 
     def test_add_book_in_favorites_add_book_in_favorites(self):
@@ -64,8 +65,7 @@ class TestBooksCollector:
         collector = BooksCollector()
         assert collector.get_list_of_favorites_books() == []
 
-    @pytest.mark.parametrize('name', ['Гермиона Грейнджер и как Рон все испортил', 'Северус Снейп и дополнительное образование'])
-    def test_add_new_book_not_add_book_name_more_than_40_symbols(self, name):
+    def test_add_new_book_not_add_book_name_more_than_40_symbols(self):
         collector = BooksCollector()
-        collector.add_new_book(name)
+        collector.add_new_book('Гермиона Грейнджер и как Рон все испортил')
         assert len(collector.get_books_genre()) == 0
